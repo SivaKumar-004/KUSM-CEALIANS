@@ -51,11 +51,139 @@
         <main class="main-content">
             <header>
                 <div>
-                    <h1>Welcome, <span id="display-name">Guest</span></h1>
-                    <p>Financial Simulation Dashboard</p>
+                    <h1>National Financial Vulnerability Intelligence System</h1>
+                    <p>Macro-Economic Dashboard & Agent Simulator</p>
                 </div>
-                <div class="score-badge">Score: <span id="display-score">--</span></div>
+                <!-- State Selection Dropdown -->
+                <div style="display:flex; align-items:center; gap: 10px;">
+                    <label for="state-select" style="font-weight:600; font-size:14px;">View State:</label>
+                    <select id="state-select" class="btn-action"
+                        style="background:var(--card-bg); color:var(--text-main); border:1px solid var(--border);">
+                        <option value="National">National Overview</option>
+                        <option value="Maharashtra">Maharashtra</option>
+                        <option value="Uttar Pradesh">Uttar Pradesh</option>
+                        <option value="Tamil Nadu">Tamil Nadu</option>
+                        <option value="Bihar">Bihar</option>
+                    </select>
+                </div>
             </header>
+
+            <!-- 1. NATIONAL DASHBOARD SECTION -->
+            <section class="national-dashboard">
+                <!-- Top Stats Grid -->
+                <div class="activities-grid" style="margin-bottom: 30px;">
+                    <!-- Regional Trend Visualizer -->
+                    <div class="activity-card"
+                        style="grid-column: span 1; display:flex; flex-direction:column; justify-content:center;">
+                        <h3>Regional Vulnerability Index</h3>
+                        <p style="font-size:12px; color:var(--text-muted); margin-bottom: 20px;">Real-time risk averages
+                            across major states.</p>
+
+                        <div class="trend-bars" style="display:flex; flex-direction:column; gap:12px;">
+                            <!-- MH -->
+                            <div style="display:flex; align-items:center;">
+                                <span style="width: 40px; font-size:11px; font-weight:600;">MH</span>
+                                <div
+                                    style="flex-grow: 1; background: var(--border); height: 8px; border-radius: 4px; overflow:hidden;">
+                                    <div style="width: 35%; background: var(--success); height: 100%;"></div>
+                                </div>
+                                <span
+                                    style="width: 30px; text-align:right; font-size:11px; color:var(--success);">35%</span>
+                            </div>
+                            <!-- UP -->
+                            <div style="display:flex; align-items:center;">
+                                <span style="width: 40px; font-size:11px; font-weight:600;">UP</span>
+                                <div
+                                    style="flex-grow: 1; background: var(--border); height: 8px; border-radius: 4px; overflow:hidden;">
+                                    <div style="width: 65%; background: var(--warning); height: 100%;"></div>
+                                </div>
+                                <span
+                                    style="width: 30px; text-align:right; font-size:11px; color:var(--warning);">65%</span>
+                            </div>
+                            <!-- TN -->
+                            <div style="display:flex; align-items:center;">
+                                <span style="width: 40px; font-size:11px; font-weight:600;">TN</span>
+                                <div
+                                    style="flex-grow: 1; background: var(--border); height: 8px; border-radius: 4px; overflow:hidden;">
+                                    <div style="width: 42%; background: var(--primary); height: 100%;"></div>
+                                </div>
+                                <span
+                                    style="width: 30px; text-align:right; font-size:11px; color:var(--primary);">42%</span>
+                            </div>
+                            <!-- BR -->
+                            <div style="display:flex; align-items:center;">
+                                <span style="width: 40px; font-size:11px; font-weight:600;">BR</span>
+                                <div
+                                    style="flex-grow: 1; background: var(--border); height: 8px; border-radius: 4px; overflow:hidden;">
+                                    <div style="width: 82%; background: var(--danger); height: 100%;"></div>
+                                </div>
+                                <span
+                                    style="width: 30px; text-align:right; font-size:11px; color:var(--danger);">82%</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- State Helplines Directory -->
+                    <div class="activity-card" style="grid-column: span 1; background: var(--card-bg);">
+                        <h3><i class="fa-solid fa-phone" style="color:var(--primary);"></i> Regional Helpline Directory
+                        </h3>
+                        <p style="font-size:12px; color:var(--text-muted); margin-bottom: 20px;">Select a state from the
+                            header to view active dispatch lines.</p>
+
+                        <div id="helpline-content" style="display:flex; flex-direction:column; gap: 15px;">
+                            <div class="highlight-box" style="padding:10px; border-left: 3px solid var(--danger);">
+                                <span style="font-size:11px; color:var(--text-muted); text-transform:uppercase;">Debt
+                                    Relief / Farmer Distress</span>
+                                <h4 style="margin:5px 0 0 0; color:var(--danger);">1800-180-1551 (Kisan Call Center)
+                                </h4>
+                            </div>
+                            <div class="highlight-box" style="padding:10px; border-left: 3px solid var(--success);">
+                                <span style="font-size:11px; color:var(--text-muted); text-transform:uppercase;">Welfare
+                                    Office Direct</span>
+                                <h4 style="margin:5px 0 0 0; color:var(--success);">011-2338-9247 (National)</h4>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- National Schemes Tracker -->
+                <h3
+                    style="margin-bottom: 20px; font-size: 18px; color: var(--text-main); border-bottom: 1px solid var(--border); padding-bottom:10px;">
+                    National Schemes Enrollment Monitor</h3>
+                <div class="activities-grid" style="margin-bottom: 50px;">
+                    <!-- PMJJBY -->
+                    <div class="activity-card">
+                        <div class="icon-wrap" style="background:#DBEAFE; color:#1E3A8A;"><i
+                                class="fa-solid fa-shield-heart"></i></div>
+                        <h4 style="margin-bottom:5px;">PMJJBY (Life Cover)</h4>
+                        <div
+                            style="display:flex; justify-content:space-between; font-size:12px; color:var(--text-muted);">
+                            <span>Enrolled: 16.2 Crore</span>
+                            <span>Target: 20 Cr</span>
+                        </div>
+                        <div
+                            style="width:100%; height:4px; background:var(--border); margin-top:8px; border-radius:2px;">
+                            <div style="width:81%; height:100%; background:#3B82F6;"></div>
+                        </div>
+                    </div>
+
+                    <!-- PM-KISAN -->
+                    <div class="activity-card">
+                        <div class="icon-wrap" style="background:#D1FAE5; color:#065F46;"><i
+                                class="fa-solid fa-wheat-awn"></i></div>
+                        <h4 style="margin-bottom:5px;">PM-KISAN (Income Support)</h4>
+                        <div
+                            style="display:flex; justify-content:space-between; font-size:12px; color:var(--text-muted);">
+                            <span>Disbursed: ₹3.2 Lakh Cr</span>
+                            <span>Active: 11 Crore</span>
+                        </div>
+                        <div
+                            style="width:100%; height:4px; background:var(--border); margin-top:8px; border-radius:2px;">
+                            <div style="width:95%; height:100%; background:#10B981;"></div>
+                        </div>
+                    </div>
+                </div>
+            </section>
 
             <!-- Test Controls to trigger the LangGraph -->
             <section class="test-panel card glassmorphism">

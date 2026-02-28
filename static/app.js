@@ -167,8 +167,8 @@ document.addEventListener('DOMContentLoaded', () => {
         const income = parseInt(document.getElementById('input-income').value);
         const emi = parseInt(document.getElementById('input-emi').value);
 
-        displayName.textContent = name;
-        displayScore.textContent = score;
+        if (displayName) displayName.textContent = name;
+        if (displayScore) displayScore.textContent = score;
 
         // UI Reset
         resultsContainer.classList.add('hidden');
@@ -596,4 +596,55 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('review-name').value = '';
         document.getElementById('review-text').value = '';
     });
+
+    // State Select Logic
+    const stateSelect = document.getElementById('state-select');
+    if (stateSelect) {
+        stateSelect.addEventListener('change', (e) => {
+            const state = e.target.value;
+
+            // Randomize Regional Vulnerability Index trend bars
+            const bars = document.querySelectorAll('.trend-bars > div');
+            bars.forEach(bar => {
+                const percentage = Math.floor(Math.random() * 80) + 10;
+                const innerDiv = bar.querySelector('div > div'); // the filled progress bar
+                const label = bar.querySelector('span:last-child');
+
+                if (innerDiv && innerDiv.tagName === 'DIV') {
+                    innerDiv.style.width = percentage + '%';
+
+                    if (percentage < 40) {
+                        innerDiv.style.background = 'var(--success)';
+                        label.style.color = 'var(--success)';
+                    } else if (percentage < 70) {
+                        innerDiv.style.background = 'var(--warning)';
+                        label.style.color = 'var(--warning)';
+                    } else {
+                        innerDiv.style.background = 'var(--danger)';
+                        label.style.color = 'var(--danger)';
+                    }
+                }
+                if (label) {
+                    label.textContent = percentage + '%';
+                }
+            });
+
+            // Randomize Helplines slightly just to show reactivity
+            const helplines = document.getElementById('helpline-content');
+            if (helplines) {
+                const prefix1 = Math.floor(Math.random() * 900) + 100;
+                const prefix2 = Math.floor(Math.random() * 9000) + 1000;
+                helplines.innerHTML = `
+                    <div class="highlight-box" style="padding:10px; border-left: 3px solid var(--danger);">
+                        <span style="font-size:11px; color:var(--text-muted); text-transform:uppercase;">Debt Relief / State Distress (${state})</span>
+                        <h4 style="margin:5px 0 0 0; color:var(--danger);">1800-${prefix1}-${prefix2} (State Call Center)</h4>
+                    </div>
+                    <div class="highlight-box" style="padding:10px; border-left: 3px solid var(--success);">
+                        <span style="font-size:11px; color:var(--text-muted); text-transform:uppercase;">Welfare Office Direct (${state})</span>
+                        <h4 style="margin:5px 0 0 0; color:var(--success);">0${prefix1}-${prefix2} (Regional)</h4>
+                    </div>
+                `;
+            }
+        });
+    }
 });
