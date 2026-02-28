@@ -1,0 +1,96 @@
+﻿Running Financial Intervention Agent Tests...
+
+--------------------------------------------------
+Testing Input -> User: 'user_A_resilience', Score: 85
+Agent JSON Output:
+{
+  "user_id": "user_A_resilience",
+  "selected_track": "Resilience Builder",
+  "recommended_actions": [
+    "Suggest portfolio diversification review",
+    "Suggest insurance coverage review",
+    "Suggest pension planning review",
+    "Suggest long-term wealth automation setup"
+  ],
+  "escalation_required": false,
+  "missing_data": []
+}
+--------------------------------------------------
+
+--------------------------------------------------
+Testing Input -> User: 'user_B_stability', Score: 60
+Agent JSON Output:
+{
+  "user_id": "user_B_stability",
+  "selected_track": "Stability Anchor",
+  "recommended_actions": [
+    "Suggest expense monitoring",
+    "Suggest EMI optimization review",
+    "Suggest insurance coverage check",
+    "Suggest financial literacy reinforcement"
+  ],
+  "escalation_required": false,
+  "missing_data": []
+}
+--------------------------------------------------
+
+--------------------------------------------------
+Testing Input -> User: 'user_C_safety', Score: 45
+Agent JSON Output:
+{
+  "user_id": "user_C_safety",
+  "selected_track": "Safety Net",
+  "recommended_actions": [
+    "Recommend emergency fund creation",
+    "Recommend review of welfare eligibility",
+    "Recommend debt exposure review",
+    "Suggest financial counselling access"
+  ],
+  "escalation_required": false,
+  "missing_data": []
+}
+--------------------------------------------------
+
+--------------------------------------------------
+Testing Input -> User: 'user_D_debt', Score: 20
+Agent JSON Output:
+{
+  "user_id": "user_D_debt",
+  "selected_track": "Debt Revival",
+  "recommended_actions": [
+    "Recommend structured debt management consultation",
+    "Recommend strict expense freeze plan",
+    "Recommend repayment prioritization strategy"
+  ],
+  "escalation_required": true,
+  "missing_data": []
+}
+--------------------------------------------------
+
+--------------------------------------------------
+Testing Input -> User: 'user_E_missing', Score: None
+Agent JSON Output:
+{
+  "user_id": "user_E_missing",
+  "selected_track": "",
+  "recommended_actions": [],
+  "escalation_required": false,
+  "missing_data": [
+    "score"
+  ]
+}
+--------------------------------------------------
+
+--------------------------------------------------
+Testing Input -> User: 'user_F_invalid', Score: -10
+Agent JSON Output:
+{
+  "user_id": "user_F_invalid",
+  "selected_track": "",
+  "recommended_actions": [],
+  "escalation_required": false,
+  "missing_data": [
+    "score"
+  ]
+}
+--------------------------------------------------

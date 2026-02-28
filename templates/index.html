@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resilience Builder Agent Demo</title>
+    <!-- Importing modern typography -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@500;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="/static/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+
+<body>
+    <div class="dashboard">
+        <aside class="sidebar" style="display: flex; flex-direction: column;">
+            <div class="logo">
+                <svg width="36" height="36" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <rect x="2" y="12" width="16" height="16" rx="6" fill="#6366F1" fill-opacity="0.9" />
+                    <rect x="12" y="2" width="16" height="16" rx="6" fill="#8B5CF6" fill-opacity="0.9" />
+                </svg>
+                <h2>Fincare AI</h2>
+            </div>
+            <nav>
+                <a href="#" class="active"><i class="fa-solid fa-chart-line"></i> Dashboard</a>
+            </nav>
+
+            <div class="testimonial-widget"
+                style="margin-top: auto; background: rgba(255,255,255,0.6); padding: 20px; border-radius: 20px; font-size: 13px; border: 1px solid rgba(255,255,255,0.8); box-shadow: 0 10px 20px -5px rgba(0,0,0,0.05); margin-bottom: 20px;">
+                <div style="display: flex; gap: 4px; color: #F59E0B; margin-bottom: 12px; font-size: 12px;">
+                    <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i
+                        class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+                </div>
+                <p style="font-style: italic; color: var(--text-muted); margin-bottom: 15px; line-height: 1.6;">"The
+                    custom paths mapped exactly to my stress levels. The UI feels so incredibly calming and
+                    trustworthy."</p>
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <div
+                        style="width: 30px; height: 30px; border-radius: 50%; background: var(--border); display: flex; align-items: center; justify-content: center; color: var(--primary); font-weight: 700; font-size: 14px;">
+                        A</div>
+                    <strong style="font-family: 'Outfit'; color: var(--text-main); font-size: 14px;">Anjali K.</strong>
+                </div>
+                <button id="btn-open-review" class="btn-primary"
+                    style="margin-top: 15px; width: 100%; font-size: 12px; padding: 8px 0;"><i
+                        class="fa-solid fa-comment-dots"></i> Leave a Review</button>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <header>
+                <div>
+                    <h1>Welcome, <span id="display-name">Guest</span></h1>
+                    <p>Financial Simulation Dashboard</p>
+                </div>
+                <div class="score-badge">Score: <span id="display-score">--</span></div>
+            </header>
+
+            <!-- Test Controls to trigger the LangGraph -->
+            <section class="test-panel card glassmorphism">
+                <h3><i class="fa-solid fa-microchip"></i> Agent Simulator</h3>
+                <div class="input-group">
+                    <input type="text" id="input-name" placeholder="Name" value="Rahul Sharma">
+                    <input type="number" id="input-age" placeholder="Age" value="32" style="width: 70px;">
+                    <input type="number" id="input-score" placeholder="Score (0-100)" value="60" style="width: 80px;">
+                    <input type="number" id="input-gap" placeholder="Retirement Gap (₹)" value="3500000"
+                        style="width: 140px;">
+                    <input type="number" id="input-income" placeholder="Monthly Income (₹)" value="50000"
+                        style="width: 140px;">
+                    <input type="number" id="input-emi" placeholder="Monthly EMI (₹)" value="25000"
+                        style="width: 130px;">
+                    <button id="btn-analyze" class="btn-primary">Run Analysis</button>
+                </div>
+            </section>
+
+            <div id="loading" class="hidden">
+                <div class="spinner"></div>
+                <p>Agent is analyzing profile and predicting optimal interventions...</p>
+            </div>
+
+            <!-- Agent Intervention Results Container -->
+            <div id="results-container" class="hidden" style="position: relative;">
+
+                <!-- NEW: Custom Score Paths Setup -->
+                <div class="paths-container hidden" id="paths-container">
+                    <h3 style="margin-bottom: 20px; font-size: 24px; color: var(--text-main); font-weight: 700;">Your
+                        Custom Next Steps</h3>
+                    <div class="paths-grid">
+
+                        <!-- Path A: Motivational -->
+                        <div class="path-card path-a">
+                            <div class="path-icon"><i class="fa-solid fa-heart"></i></div>
+                            <h4>STABLE</h4>
+                            <p id="path-a-text">Based on your score, this is your current financial state.</p>
+                        </div>
+
+                        <!-- Path B: Recommended Resource -->
+                        <div class="path-card path-b">
+                            <div class="path-icon"><i class="fa-solid fa-book-open"></i></div>
+                            <h4>WATCH LIST</h4>
+                            <p id="path-b-text">A curated tool exactly matched to your current situation.</p>
+                        </div>
+
+                        <!-- Path C: Fun Challenge -->
+                        <div class="path-card path-c">
+                            <div class="path-icon"><i class="fa-solid fa-gamepad"></i></div>
+                            <h4>VULNERABLE</h4>
+                            <p id="path-c-text">An interactive quick-win activity to boost your momentum.</p>
+                        </div>
+
+                        <!-- Path D: Retry / Alternative -->
+                        <div class="path-card path-d">
+                            <div class="path-icon"><i class="fa-solid fa-rotate-right"></i></div>
+                            <h4>DEBT STRESSED</h4>
+                            <p id="path-d-text">Not ready? Here is a tiny micro-step you can take instead to iterate.
+                            </p>
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="track-header">
+                    <h2>Track Allocated: <span id="track-name" class="highlight-text"></span></h2>
+                </div>
+
+                <!-- Tabs -->
+                <div class="tabs">
+                    <button id="tabbtn-actions" class="tab-btn active" onclick="window.switchTab('actions')">Action
+                        Items</button>
+                    <button id="tabbtn-log" class="tab-btn" onclick="window.switchTab('log')">Activity Log <span
+                            id="log-badge" class="pill"
+                            style="margin:0; font-size:10px; background:var(--primary); color:#fff; padding: 2px 6px;">0</span></button>
+                </div>
+
+                <div id="tab-actions" class="tab-content active">
+
+                    <!-- Resilience Builder Activities Box -->
+                    <div id="resilience-panel" class="activities-grid hidden">
+
+                        <!-- 1. Govt Scheme Wrapper -->
+                        <div class="activity-card" id="card-scheme">
+                            <div class="icon-wrap"><i class="fa-solid fa-landmark"></i></div>
+                            <h3>Govt Scheme Auto-Enroll</h3>
+                            <p>We found you are eligible for <strong>PMJJBY</strong> (Pradhan Mantri Jeevan Jyoti Bima
+                                Yojana) offering ₹2 Lakh cover at ₹436/year.</p>
+                            <div class="data-preview">
+                                <small>Prefilled Data:</small>
+                                <div class="pill">Name: <span class="d-name"></span></div>
+                                <div class="pill">Age: <span class="d-age"></span></div>
+                            </div>
+                            <div class="action-footer">
+                                <button id="btn-enroll-scheme" class="btn-action">Confirm Enrollment</button>
+                                <span class="info"
+                                    title="PMJJBY provides 2L life cover. Premium auto-debited annually.">What is
+                                    this?</span>
+                            </div>
+                        </div>
+
+                        <!-- 2. SIP Setup Wrapper -->
+                        <div class="activity-card" id="card-sip">
+                            <div class="icon-wrap"><i class="fa-solid fa-money-bill-trend-up"></i></div>
+                            <h3>Close Retirement Gap</h3>
+                            <p>Based on our engine, you have a gap of <strong id="d-gap"></strong> for retirement.</p>
+                            <div class="highlight-box">
+                                <span>Recommended SIP</span>
+                                <h2 id="d-sip">--</h2>
+                            </div>
+                            <div class="action-footer">
+                                <button id="btn-start-sip" class="btn-action">Start Auto-SIP</button>
+                            </div>
+                        </div>
+
+                        <!-- 3. Health Cover Wrapper -->
+                        <div class="activity-card">
+                            <div class="icon-wrap"><i class="fa-solid fa-notes-medical"></i></div>
+                            <h3>Top-up Health Cover</h3>
+                            <p>Your current cover may be insufficient. Compare affordable top-ups:</p>
+                            <div class="plan-list" id="plan-list-container">
+                                <!-- populated via JS -->
+                            </div>
+                        </div>
+
+                        <!-- 4. Weekly Tips Wrapper -->
+                        <div class="activity-card">
+                            <div class="icon-wrap"><i class="fa-solid fa-envelope-open-text"></i></div>
+                            <h3>Financial Insights</h3>
+                            <p>Receive weekly tailored insights directly to your inbox based on your spending.</p>
+                            <div class="toggle-container">
+                                <label class="switch">
+                                    <input type="checkbox" id="btn-toggle-tips">
+                                    <span class="slider round"></span>
+                                </label>
+                                <span>Enable Weekly Tips</span>
+                            </div>
+                        </div>
+
+                        <!-- 5. Expense Review Wrapper -->
+                        <div class="activity-card full-width">
+                            <div class="icon-wrap"><i class="fa-solid fa-magnifying-glass-dollar"></i></div>
+                            <h3>Automated Expense Review</h3>
+                            <p>Our agent scanned your recurring bills. Here are immediate saving opportunities:</p>
+                            <table class="modern-table">
+                                <thead>
+                                    <tr>
+                                        <th>Category</th>
+                                        <th>Observation</th>
+                                        <th>Potential Savings</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="expense-list-container">
+                                    <!-- populated via JS -->
+                                </tbody>
+                            </table>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- Stability Anchor Activities Box -->
+                <div id="stability-panel" class="activities-grid hidden">
+
+                    <!-- 1. EMI Restructure -->
+                    <div class="activity-card" id="card-emi">
+                        <div class="icon-wrap" style="color:#DC2626; background:#FEE2E2;"><i
+                                class="fa-solid fa-triangle-exclamation"></i></div>
+                        <h3>High EMI Alert</h3>
+                        <p id="emi-msg">Your EMI is 50% of your income. That's above the 40% safe limit.</p>
+                        <div class="action-footer">
+                            <button id="btn-restructure-emi" class="btn-action">Restructure EMI Plans</button>
+                        </div>
+                    </div>
+
+                    <!-- 2. Govt Scheme Auto-Apply -->
+                    <div class="activity-card" id="card-insurance-urgent">
+                        <div class="icon-wrap" style="color:#D97706; background:#FEF3C7;"><i
+                                class="fa-solid fa-shield-virus"></i></div>
+                        <h3>Urgent Protection Needed</h3>
+                        <p id="insurance-msg">You are not covered. Auto-apply now for family protection.</p>
+                        <div class="action-footer">
+                            <button id="btn-apply-insurance" class="btn-action">Apply for PMJJBY</button>
+                        </div>
+                    </div>
+
+                    <!-- 3. Micro-learning Videos -->
+                    <div class="activity-card full-width" id="card-videos">
+                        <div class="icon-wrap"><i class="fa-solid fa-graduation-cap"></i></div>
+                        <h3>Debt Management Basics</h3>
+                        <p>Receive weekly micro-learning videos on managing finances and debt effectively.</p>
+                        <div class="toggle-container" style="justify-content:space-between">
+                            <div class="video-thumbs" id="video-thumbs-container"
+                                style="display:flex; gap:15px; margin-top:10px;">
+                                <!-- populated via JS -->
+                            </div>
+                            <div style="display:flex; align-items:center;">
+                                <label class="switch">
+                                    <input type="checkbox" id="btn-toggle-micro">
+                                    <span class="slider round"></span>
+                                </label>
+                                <span style="font-weight:600;">Enable Videos</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 4. Counselor Alert -->
+                    <div class="activity-card" id="card-counselor">
+                        <div class="icon-wrap" style="color:#2563EB; background:#DBEAFE;"><i
+                                class="fa-solid fa-user-tie"></i></div>
+                        <h3>Financial Counselor</h3>
+                        <p>Need help navigating debt? Connect with a human counselor now for free guidance.</p>
+                        <div class="action-footer">
+                            <button id="btn-counselor" class="btn-action" style="background:var(--primary)"><i
+                                    class="fa-solid fa-comments"></i> Connect to Human</button>
+                        </div>
+                    </div>
+
+                    <!-- 5. Bill Reminders -->
+                    <div class="activity-card" id="card-bills">
+                        <div class="icon-wrap"><i class="fa-solid fa-calendar-check"></i></div>
+                        <h3>Upcoming Bills</h3>
+                        <div class="plan-list" id="bill-list-container">
+                            <!-- populated via JS -->
+                        </div>
+                        <div class="action-footer">
+                            <button id="btn-reminders" class="btn-action">Set Reminders</button>
+                        </div>
+                    </div>
+
+                    <!-- 6. 7-Day Budgeting Challenge -->
+                    <div class="activity-card full-width" id="card-budget">
+                        <div class="icon-wrap" style="color:#059669; background:#D1FAE5;"><i
+                                class="fa-solid fa-bullseye"></i></div>
+                        <h3>7-Day Savings Challenge</h3>
+                        <p>Commit to daily saving goals. A simple way to build the habit.</p>
+                        <div class="challenge-tracker" id="challenge-tracker"
+                            style="display:flex; gap:10px; margin:15px 0;">
+                            <!-- populated via JS -->
+                        </div>
+                        <div class="action-footer">
+                            <button id="btn-budget" class="btn-action">Opt-In & Start Challenge</button>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Safety Net Activities Box -->
+                <div id="safety-panel" class="activities-grid hidden">
+
+                    <!-- 1. Emergency Fund Tracker -->
+                    <div class="activity-card full-width" id="card-emergency">
+                        <div class="icon-wrap" style="color:#D97706; background:#FEF3C7;"><i
+                                class="fa-solid fa-piggy-bank"></i></div>
+                        <h3>Build Your Emergency Fund</h3>
+                        <p id="safety-ef-msg">Build a 3-month safety net.</p>
+                        <div class="highlight-box">
+                            <span>Fund Goal</span>
+                            <h2 id="safety-ef-goal">--</h2>
+                        </div>
+                        <div class="action-footer">
+                            <button id="btn-start-ef" class="btn-action">Start Saving</button>
+                        </div>
+                    </div>
+
+                    <!-- 2. Debt Helpline -->
+                    <div class="activity-card" id="card-helpline">
+                        <div class="icon-wrap" style="color:#2563EB; background:#DBEAFE;"><i
+                                class="fa-solid fa-phone-volume"></i></div>
+                        <h3>Free Debt Helpline</h3>
+                        <p>Feeling overwhelmed by debt? Call our free advisory service.</p>
+                        <div class="action-footer">
+                            <button id="btn-call-helpline" class="btn-action" style="background:#2563EB;"><i
+                                    class="fa-solid fa-phone"></i> Call <span
+                                    id="safety-phone">1800-DEBT</span></button>
+                        </div>
+                    </div>
+
+                    <!-- 3. Welfare Schemes -->
+                    <div class="activity-card" id="card-welfare">
+                        <div class="icon-wrap" style="color:#059669; background:#D1FAE5;"><i
+                                class="fa-solid fa-wheat-awn"></i></div>
+                        <h3>Welfare Scheme Match</h3>
+                        <div class="plan-list" id="welfare-list-container">
+                            <!-- populated via JS -->
+                        </div>
+                        <div class="action-footer" style="flex-direction: column; align-items: stretch; gap: 10px;">
+                            <div class="data-preview" style="margin-bottom:0;"><small>Prefilled:</small>
+                                <div class="pill">Name: <span class="ws-name"></span></div>
+                            </div>
+                            <button id="btn-apply-welfare" class="btn-action">Submit Pre-filled Applications</button>
+                        </div>
+                    </div>
+
+                    <!-- 4. Literacy Videos -->
+                    <div class="activity-card full-width" id="card-safety-literacy">
+                        <div class="icon-wrap"><i class="fa-solid fa-shield-cat"></i></div>
+                        <h3>Urgent Financial Guidance</h3>
+                        <p>Critical micro-learning on dealing with loans and understanding interests.</p>
+                        <div class="video-thumbs" id="safety-video-container"
+                            style="display:flex; gap:15px; margin-top:10px;">
+                            <!-- populated via JS -->
+                        </div>
+                    </div>
+
+                    <!-- 5. Payment Deferral -->
+                    <div class="activity-card full-width" id="card-deferral">
+                        <div class="icon-wrap" style="color:#9333EA; background:#F3E8FF;"><i
+                                class="fa-solid fa-clock-rotate-left"></i></div>
+                        <h3>Postpone Non-Essential Payments</h3>
+                        <p>We've identified upcoming bills. You can request a 30-day deferment from lenders without
+                            penalty.
+                        </p>
+                        <table class="modern-table">
+                            <thead>
+                                <tr>
+                                    <th>Bill</th>
+                                    <th>Amount</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="deferral-list-container">
+                                <!-- populated via JS -->
+                            </tbody>
+                        </table>
+                    </div>
+
+                </div>
+
+                <!-- Debt Revival Activities Box -->
+                <div id="debt-panel" class="activities-grid hidden">
+
+                    <!-- 1. OTS Auto-Apply -->
+                    <div class="activity-card full-width" id="card-ots"
+                        style="border-color: #EF4444; background: #FEF2F2;">
+                        <div class="icon-wrap" style="color:#B91C1C; background:#FEE2E2;"><i
+                                class="fa-solid fa-scale-unbalanced"></i></div>
+                        <h3 style="color:#B91C1C;">Apply for One-Time Settlement (OTS)</h3>
+                        <p>You have an estimated <strong id="dr-ots-debt">--</strong> outstanding. Propose a single
+                            settlement amount to clear it completely.</p>
+                        <div class="highlight-box" style="background:#fff; border-color:#FCA5A5; color:#991B1B;">
+                            <span>Proposed Offer (45%)</span>
+                            <h2 id="dr-ots-offer">--</h2>
+                        </div>
+                        <div class="action-footer">
+                            <button id="btn-apply-ots" class="btn-primary"
+                                style="background:#DC2626; width:100%;">Submit to
+                                Bank</button>
+                        </div>
+                    </div>
+
+                    <!-- 2. Debt Management Counseling -->
+                    <div class="activity-card" id="card-dmc">
+                        <div class="icon-wrap"><i class="fa-solid fa-comments"></i></div>
+                        <h3>Debt Management Service</h3>
+                        <div id="dmc-steps"
+                            style="font-size:13px; color:var(--text-muted); line-height: 1.8; margin-bottom: 20px;">
+                            <!-- populated by js -->
+                        </div>
+                        <div class="action-footer">
+                            <button id="btn-start-dmc" class="btn-action">Start Free Counseling</button>
+                        </div>
+                    </div>
+
+                    <!-- 3. Emergency Ration -->
+                    <div class="activity-card" id="card-ration">
+                        <div class="icon-wrap" style="color:#D97706; background:#FEF3C7;"><i
+                                class="fa-solid fa-bowl-rice"></i></div>
+                        <h3>Emergency Ration</h3>
+                        <p id="dr-ration-msg">Immediate application ready.</p>
+                        <div class="action-footer" style="flex-direction: column; align-items: stretch; gap: 10px;">
+                            <div class="data-preview" style="margin-bottom:0;"><small>Prefilled:</small>
+                                <div class="pill">Name: <span class="dr-r-name"></span></div>
+                            </div>
+                            <button id="btn-apply-ration" class="btn-action">Sent to Block Officer</button>
+                        </div>
+                    </div>
+
+                    <!-- 4. Loan Disablement Warning -->
+                    <div class="activity-card full-width" id="card-freeze">
+                        <div class="icon-wrap" style="color:#1F2937; background:#E5E7EB;"><i
+                                class="fa-solid fa-lock"></i>
+                        </div>
+                        <h3>Credit Offers Frozen</h3>
+                        <p id="dr-freeze-msg" style="color:#B91C1C; font-weight:600;">Taking new loans will worsen your
+                            situation.</p>
+                        <div style="font-size: 13px; color: var(--text-muted);">
+                            All new loan applications and pre-approved offers have been temporarily disabled on your
+                            profile
+                            to protect your financial health.
+                        </div>
+                    </div>
+
+                    <!-- 5. Consolidation Simulator -->
+                    <div class="activity-card full-width" id="card-consolidation">
+                        <div class="icon-wrap" style="color:#059669; background:#D1FAE5;"><i
+                                class="fa-solid fa-compress"></i></div>
+                        <h3>Debt Consolidation Simulator</h3>
+                        <p>Combine all your debts into one lower-interest loan to drastically reduce your monthly
+                            outflow.
+                        </p>
+                        <div
+                            style="display:flex; gap: 20px; align-items: center; justify-content: center; margin: 20px 0; background: #F9FAFB; padding: 20px; border-radius: 12px; border: 1px solid var(--border);">
+                            <div style="text-align:center;">
+                                <div style="font-size:12px; color:var(--text-muted);">Current EMIs</div>
+                                <h3 id="dr-cs-current" style="color:#DC2626;">--</h3>
+                            </div>
+                            <i class="fa-solid fa-arrow-right-long" style="color:#9CA3AF;"></i>
+                            <div style="text-align:center;">
+                                <div style="font-size:12px; color:var(--text-muted);">Consolidated EMI</div>
+                                <h3 id="dr-cs-new" style="color:#059669;">--</h3>
+                            </div>
+                        </div>
+                        <div class="action-footer">
+                            <button id="btn-consolidate" class="btn-action">Draft Proposal</button>
+                        </div>
+                    </div>
+
+                    <!-- 6. Daily Motivation -->
+                    <div class="activity-card full-width" id="card-motivation">
+                        <div style="text-align:center; padding: 20px;">
+                            <i class="fa-solid fa-quote-left"
+                                style="font-size:30px; color:#E5E7EB; margin-bottom: 15px;"></i>
+                            <h3 id="dr-quote"
+                                style="font-family: 'Outfit'; font-size: 20px; color: var(--primary); margin-bottom: 10px;">
+                                --</h3>
+                            <p id="dr-tip" style="font-size: 14px; color: var(--text-muted);">--</p>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div style="text-align:center; margin-top: 30px; margin-bottom: 20px;">
+                <button id="btn-simulate-week" class="btn-primary" style="background:#111827;"><i
+                        class="fa-solid fa-forward-step"></i> Simulate Next Week</button>
+            </div>
+
+    </div> <!-- End of tab-actions -->
+
+    <div id="tab-log" class="tab-content">
+        <div class="card" style="min-height: 250px;">
+            <h3>System Activity Log</h3>
+            <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 15px;">Automated system actions and
+                background triggers are recorded here.</p>
+            <ul id="activity-log-list" style="list-style: none; margin-top: 15px; padding: 0;">
+                <li id="empty-log" style="color:var(--text-muted); font-size:14px; padding: 10px 0;">No activities
+                    logged yet.</li>
+            </ul>
+        </div>
+    </div>
+
+    </div>
+    </main>
+    </div>
+
+    <!-- Notification Toast -->
+    <div id="toast" class="toast hidden">
+        <i class="fa-solid fa-circle-check"></i>
+        <span id="toast-msg">Success!</span>
+    </div>
+
+    <!-- Review Modal -->
+    <div id="review-modal" class="modal-overlay hidden">
+        <div class="modal-content card glassmorphism" style="max-width: 450px; width: 100%; position: relative;">
+            <button id="btn-close-review"
+                style="position: absolute; right: 20px; top: 20px; background: none; border: none; font-size: 20px; color: var(--text-muted); cursor: pointer;"><i
+                    class="fa-solid fa-times"></i></button>
+            <div style="text-align: center; margin-bottom: 20px;">
+                <div
+                    style="width: 50px; height: 50px; background: #EEF2FF; color: var(--primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 24px; margin: 0 auto 15px;">
+                    <i class="fa-solid fa-star"></i>
+                </div>
+                <h3 style="font-size: 24px; color: var(--text-main); font-weight: 700;">Leave a Review</h3>
+                <p style="font-size: 14px; color: var(--text-muted); margin-top: 5px;">We'd love to hear how Fincare AI
+                    has helped you.</p>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 15px;">
+                <div style="display: flex; gap: 10px; justify-content: center; font-size: 24px; color: #E5E7EB; cursor: pointer;"
+                    id="star-rating">
+                    <i class="fa-solid fa-star star-btn" data-val="1"></i>
+                    <i class="fa-solid fa-star star-btn" data-val="2"></i>
+                    <i class="fa-solid fa-star star-btn" data-val="3"></i>
+                    <i class="fa-solid fa-star star-btn" data-val="4"></i>
+                    <i class="fa-solid fa-star star-btn" data-val="5"></i>
+                </div>
+                <input type="text" id="review-name" placeholder="Your Name"
+                    style="padding: 12px 18px; border: 1px solid var(--border); border-radius: 12px; outline: none; font-family: inherit; font-size: 14px; box-sizing: border-box; width: 100%;">
+                <textarea id="review-text" placeholder="Tell us about your experience..." rows="4"
+                    style="padding: 12px 18px; border: 1px solid var(--border); border-radius: 12px; outline: none; font-family: inherit; font-size: 14px; resize: none; box-sizing: border-box; width: 100%;"></textarea>
+                <button id="btn-submit-review" class="btn-primary" style="width: 100%; margin-top: 10px;">Submit
+                    Review</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="/static/app.js?v=3"></script>
+</body>
+
+</html>
